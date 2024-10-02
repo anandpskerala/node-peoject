@@ -67,6 +67,16 @@ app.get("/", authUser, (req, res) => {
         "image": "https://www.cnet.com/a/img/resize/6c5477a1e132842c60136989c784ef0ca300a888/hub/2023/08/15/f511b8a1-6be3-498e-afed-3e4e0331c3e5/hp-pavilion-aero-2023-01.jpg?auto=webp&fit=crop&height=360&width=640",
         "title": "HP Pavilion Aero 13",
         "description": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi."
+      }, 
+      {
+        "image": "https://www.cnet.com/a/img/resize/6c5477a1e132842c60136989c784ef0ca300a888/hub/2023/08/15/f511b8a1-6be3-498e-afed-3e4e0331c3e5/hp-pavilion-aero-2023-01.jpg?auto=webp&fit=crop&height=360&width=640",
+        "title": "HP Pavilion Aero 13",
+        "description": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi."
+      },
+      {
+        "image": "https://www.cnet.com/a/img/resize/6c5477a1e132842c60136989c784ef0ca300a888/hub/2023/08/15/f511b8a1-6be3-498e-afed-3e4e0331c3e5/hp-pavilion-aero-2023-01.jpg?auto=webp&fit=crop&height=360&width=640",
+        "title": "HP Pavilion Aero 13",
+        "description": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi."
       }
     ]
     return res.render("home", {products, logged: req.session.user ? 'logout': 'login', email: req.session.user.email});
@@ -115,5 +125,5 @@ app.get("/logout", (req, res) => {
 })
 
 app.listen(PORT, () => {
-    console.log("Listening to port 3000");
+    console.log(`Listening to port ${PORT}`);
 })
