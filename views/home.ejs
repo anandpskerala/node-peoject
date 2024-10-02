@@ -1,0 +1,17 @@
+<%- include('header', {title: 'Home'}) %>
+<header>
+    <%- include('navbar', {logged}) %>
+</header>
+<div class="container-fluid flex-column w-100" style="margin: 0;margin-top: 70px;">
+    <p class="my-3 text-center">Hello <%= email%></p>
+    <div class="d-flex justify-content-between px-0 px-lg-5 mb-3" style="align-items: center;">
+        <h3 class="px-0 px-lg-5">Laptops</h3>
+        <a href="/" class="text-decoration-none px-0 px-lg-5">Show more></a>
+    </div>
+    <div class="row flex-column flex-md-row justify-content-center w-100">
+        <% products.map((e) => { %>
+            <%- include('card', {img: e.image, title: e.title, description: e.description.length > 100 ? e.description.slice(0, 100) + " ...": e.description}) -%>
+        <% }) %>
+    </div>
+</div>
+<%- include('footer') %>
