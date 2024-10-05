@@ -16,7 +16,7 @@
       <form id="login-form" class="row justify-content-center w-100 align-middle m-0 shadow rounded" style="padding: 10% 10%; justify-content: center; margin-right: 0; background-color: #dddddd;"
        method="post" action="/login">
         <p style="font-size: 10px; font-weight: 700; color: #ff0000;">* Required</p>
-        <%- message -%>
+        <p id="error" class="rounded text-center text-danger mb-2 p-2"></p>
         <div class="mb-3">
           <label for="email" class="form-label">Email address *</label>
           <input type="email" class="form-control" id="email" name="email" required>
@@ -34,46 +34,57 @@
   </div>
 </div>
 <script>
-    $(document).ready(function() {
-      $("#showpassword").click((e) => {
-        let password = document.getElementById("password");
-        password.type = e.target.checked ? "text": "password";
-      });
-      $('#login-form').submit((e) => {
-        e.preventDefault();
-        let email = document.getElementById("email").value;
-        let password = document.getElementById("password").value;
-        const regex = /^[a-zA-Z0-9.-_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        let text;
+  $(document).ready(() => {
+    $("#showpassword").click((e) => {
+      let password = document.getElementById("password");
+      password.type = e.target.checked ? "text": "password";
+    });
 
-        if (email == "" || email == null || !regex.test(String(email).toLowerCase())) {
-          text = "Email should be valid";
-        } else if (password == "" || password == null || password.length < 8) {
-          text = "Password should contain atleast 8 characters";
-        } else {
-          text = "success";
-        }
+    $('#login-form').submit(async (e) => {
+      e.preventDefault(); 
+      let email = document.getElementById("email").value;
+      let password = document.getElementById("password").value;
+      const regex = /^[a-zA-Z0-9.-_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      let text;
+      let error_msg = document.getElementById("error");
 
-        if (text == "success") {
-          $('#login-form').off('submit').submit();
-        } else {
-          Toastify({
-            text,
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "top", 
-            position: "right",
-            stopOnFocus: true,
-            avatar: "https://iili.io/dL5TWlt.md.png",
-            className: "error",
-            style: {
-              background: "linear-gradient( 99deg,  rgba(255,166,0,1) 14.7%, rgba(255,99,97,1) 73% )",
-              color: "#000"
+      if (email == "" || email == null || !regex.test(String(email).toLowerCase())) {
+        text = "Email should be valid";
+      } else if (password == "" || password == null || password.length < 8) {
+        text = "Password should contain at least 8 characters";
+      } else {
+        try {
+          let req = await fetch("/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
             },
-          }).showToast();
+            body: new URLSearchParams({
+              email,
+              password
+            })
+          });
+
+          let res = await req.json();
+          if (!res.success) {
+            error_msg.classList.add("border", "border-danger");
+            error_msg.innerText = res.message;
+          } else {
+            location.href = "/";
+          }
+        } catch (error) {
+          console.error("Error occurred while logging in: ", error);
+          error_msg.classList.add("border", "border-danger");
+          error_msg.innerText = "An error occurred. Please try again.";
         }
-      })
-    })
+      }
+
+      if (text) {
+        error_msg.classList.add("border", "border-danger");
+        error_msg.innerText = text;
+      }
+    });
+  });
 </script>
+
 <%- include('footer') %>
