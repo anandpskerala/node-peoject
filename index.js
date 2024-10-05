@@ -67,16 +67,6 @@ app.get("/", authUser, (req, res) => {
         "image": "https://www.cnet.com/a/img/resize/6c5477a1e132842c60136989c784ef0ca300a888/hub/2023/08/15/f511b8a1-6be3-498e-afed-3e4e0331c3e5/hp-pavilion-aero-2023-01.jpg?auto=webp&fit=crop&height=360&width=640",
         "title": "HP Pavilion Aero 13",
         "description": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi."
-      }, 
-      {
-        "image": "https://www.cnet.com/a/img/resize/6c5477a1e132842c60136989c784ef0ca300a888/hub/2023/08/15/f511b8a1-6be3-498e-afed-3e4e0331c3e5/hp-pavilion-aero-2023-01.jpg?auto=webp&fit=crop&height=360&width=640",
-        "title": "HP Pavilion Aero 13",
-        "description": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi."
-      },
-      {
-        "image": "https://www.cnet.com/a/img/resize/6c5477a1e132842c60136989c784ef0ca300a888/hub/2023/08/15/f511b8a1-6be3-498e-afed-3e4e0331c3e5/hp-pavilion-aero-2023-01.jpg?auto=webp&fit=crop&height=360&width=640",
-        "title": "HP Pavilion Aero 13",
-        "description": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi."
       }
     ]
     return res.render("home", {products, logged: req.session.user ? 'logout': 'login', email: req.session.user.email});
@@ -96,22 +86,22 @@ app.post("/login", async (req, res) => {
   const { email, password} = req.body;
 
   if (!email || !password) {
-    return res.redirect("/login");
+    return res.status(400).json({success: false, message: "Email or Password required"});
   }
 
   const verifyPassword = await bcrypt.compare(password, dummyPassword);
 
   if (email != dummyEmail || !verifyPassword) {
-    return res.render("login", { image: '/login-bg.jpg', logged: req.session.user ? 'logout': 'login', message: "<p class='border border-danger rounded text-center text-danger mb-2 p-2'>Email / Passsword doesn't match</p>"});
+    return res.status(401).json({success: false, message: "Invalid Email or Password"});
   }
 
   req.session.regenerate((err) => {
     if (err) {
       console.log("Error regenerating session:"+ err);
-      return res.redirect("/login");
+      return res.status(500).json({success: false, message: "Session error"});
     }
     req.session.user = {email, password};
-    return res.redirect("/");
+    return res.status(200).json({success: true, message: "success"});
   });
 });
 
